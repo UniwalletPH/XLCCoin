@@ -18,8 +18,6 @@ namespace XLCCoin.Node
 
             IXLCDbContext _context = _serviceProvider.GetService<IXLCDbContext>();
 
-            _context.AddressKeys.ToList();
-
 
 
 

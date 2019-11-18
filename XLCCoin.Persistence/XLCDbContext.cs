@@ -13,11 +13,17 @@ namespace XLCCoin.Persistence
         {
             this.security = security;
 
-            security.IsValid("vrynxzent");
         }
 
-        public DbSet<AddressKey> AddressKeys { get; set; }
-        public DbSet<TangleType> TangleTypes { get; set; }
-        public DbSet<TokenType> TokenTypes { get; set; }
+        public DbSet<Node> Nodes {get;set;}
+        public DbSet<Device> Devices {get;set;}
+        public DbSet<Wallet> Wallets { get;set; }
+        public DbSet<Transite> Transites { get; set; }
+        public DbSet<TransiteConnection> TransiteConnections { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(XLCDbContext).Assembly);
+        }
     }
 }
