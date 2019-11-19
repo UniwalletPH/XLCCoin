@@ -13,9 +13,4 @@
     <ProjectReference Include="..\XLCCoin.Domain\XLCCoin.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Logins\Query\" />
-    <Folder Include="Register\Query\" />
-  </ItemGroup>
-
 </Project>

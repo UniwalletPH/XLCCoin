@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XLCCoin.Persistence;
 
 namespace XLCCoin.Persistence.Migrations
 {
     [DbContext(typeof(XLCDbContext))]
-    partial class XLCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191118132517_X1")]
+    partial class X1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,27 +84,6 @@ namespace XLCCoin.Persistence.Migrations
                     b.ToTable("Transites");
                 });
 
-            modelBuilder.Entity("XLCCoin.Domain.Entities.TransiteConnection", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FromTransiteID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ToTransiteID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("FromTransiteID");
-
-                    b.HasIndex("ToTransiteID");
-
-                    b.ToTable("TransiteConnections");
-                });
-
             modelBuilder.Entity("XLCCoin.Domain.Entities.Wallet", b =>
                 {
                     b.Property<Guid>("ID")
@@ -146,21 +127,6 @@ namespace XLCCoin.Persistence.Migrations
                     b.HasOne("XLCCoin.Domain.Entities.Wallet", "ToWallet")
                         .WithMany("ToTransites")
                         .HasForeignKey("ToWalletID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("XLCCoin.Domain.Entities.TransiteConnection", b =>
-                {
-                    b.HasOne("XLCCoin.Domain.Entities.Transite", "FromTransite")
-                        .WithMany("FromTransiteConnections")
-                        .HasForeignKey("FromTransiteID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("XLCCoin.Domain.Entities.Transite", "ToTransite")
-                        .WithMany("ToTransiteConnections")
-                        .HasForeignKey("ToTransiteID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
