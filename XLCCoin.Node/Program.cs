@@ -38,9 +38,15 @@ namespace XLCCoin.Node
 
 
             //Console.ReadLine();
-
-            ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand("192.168.2.163", 13000);
-            await Mediator.Send(_listenforcon);
+            try
+            {
+                TryConnectNodeCommand _conToNode = new TryConnectNodeCommand("192.168.2.163", "My nama jeff");
+                await Mediator.Send(_conToNode);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Exception: {0}", e);
+            }
         }
     }
 }
