@@ -27,17 +27,20 @@ namespace XLCCoin.Node
 
         static async Task Main(string[] args)
         {
-            TestCommand _cmd = new TestCommand { Name = "Devs" };
-            var _response = await Mediator.Send(_cmd);
-            Console.WriteLine("Response: {0}", _response);
+            //TestCommand _cmd = new TestCommand { Name = "Devs" };
+            //var _response = await Mediator.Send(_cmd);
+            //Console.WriteLine("Response: {0}", _response);
 
 
-            TestGetNodesQuery _query = new TestGetNodesQuery();
-            var _nodes = await Mediator.Send(_query);
-            Console.WriteLine("Nodes: {0}", _nodes.Count());
+            //TestGetNodesQuery _query = new TestGetNodesQuery();
+            //var _nodes = await Mediator.Send(_query);
+            //Console.WriteLine("Nodes: {0}", _nodes.Count());
 
 
-            Console.ReadLine();
+            //Console.ReadLine();
+
+            ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand("192.168.2.163", 13000);
+            await Mediator.Send(_listenforcon);
         }
     }
 }

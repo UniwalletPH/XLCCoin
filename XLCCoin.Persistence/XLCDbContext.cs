@@ -15,11 +15,13 @@ namespace XLCCoin.Persistence
 
         }
 
-        public DbSet<Node> Nodes {get;set;}
-        public DbSet<Device> Devices {get;set;}
-        public DbSet<Wallet> Wallets { get;set; }
+        public DbSet<Node> Nodes { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Transite> Transites { get; set; }
         public DbSet<TransiteConnection> TransiteConnections { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
