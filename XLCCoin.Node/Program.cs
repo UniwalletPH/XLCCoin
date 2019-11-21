@@ -6,40 +6,36 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using XLCCoin.Application;
 using XLCCoin.Application.Interfaces;
 using XLCCoin.Application.NodeCommands.Commands;
+using XLCCoin.Application.NodeCommands.Queries;
 using XLCCoin.Persistence;
 
 namespace XLCCoin.Node
 {
     class Program
     {
-        static ServiceProvider ServiceProvider
+        static IMediator Mediator
         {
             get
             {
-                return ServiceRegistration.ServiceProvider;
+                return ServiceRegistration.ServiceProvider.GetService<IMediator>();
             }
         }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            IXLCDbContext _context = ServiceProvider.GetService<IXLCDbContext>();
-            IMediator _mediator = ServiceProvider.GetService<IMediator>();
-
-            var _w = _context.Nodes.ToList();
-
-            Console.WriteLine("Nodes: {0}", _w.Count);
-
-            TestCommand _cmd = new TestCommand
-            {
-                Name = "Devs"
-            };
-
-            var _response = _mediator.Send(_cmd).Result;
-
+            TestCommand _cmd = new TestCommand { Name = "Devs" };
+            var _response = await Mediator.Send(_cmd);
             Console.WriteLine("Response: {0}", _response);
+
+
+            TestGetNodesQuery _query = new TestGetNodesQuery();
+            var _nodes = await Mediator.Send(_query);
+            Console.WriteLine("Nodes: {0}", _nodes.Count());
+
 
             Console.ReadLine();
         }
