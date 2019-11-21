@@ -38,14 +38,8 @@ namespace XLCCoin.Web
 
             services.AddScoped<IXLCDbContext>(provider => provider.GetService<XLCDbContext>());
 
-
-
-
-
-
-
-            services.AddMediatR(typeof(Class1).Assembly);
-
+            services.AddPersistence(Configuration);
+            services.AddApplication();
 
             services.AddControllersWithViews();
         }
