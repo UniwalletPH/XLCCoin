@@ -29,7 +29,7 @@ namespace XLCCoin.Node
 
                 _services.AddDbContext<XLCDbContext>(options =>
                 {
-                    options.UseSqlite(_config.GetConnectionString("XLCConStr"));
+                    options.UseSqlServer(_config.GetConnectionString("XLCConStr"));
                 })
                 .AddScoped<ISecurity, NetworkSecurity>()
                 .AddScoped<IXLCDbContext>(provider => provider.GetService<XLCDbContext>());

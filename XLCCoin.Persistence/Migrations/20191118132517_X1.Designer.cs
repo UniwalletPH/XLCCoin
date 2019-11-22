@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XLCCoin.Persistence;
@@ -9,25 +10,27 @@ using XLCCoin.Persistence;
 namespace XLCCoin.Persistence.Migrations
 {
     [DbContext(typeof(XLCDbContext))]
-    [Migration("20191122093627_init")]
-    partial class init
+    [Migration("20191118132517_X1")]
+    partial class X1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0");
+                .HasAnnotation("ProductVersion", "3.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("XLCCoin.Domain.Entities.Device", b =>
                 {
                     b.Property<Guid>("ID")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("DeviceType")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint");
 
                     b.Property<int>("NumberOfAllowedConnections")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -38,19 +41,19 @@ namespace XLCCoin.Persistence.Migrations
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Geolocation")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IPAddress")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsBehindNAT")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<int>("Port")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -61,16 +64,16 @@ namespace XLCCoin.Persistence.Migrations
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("FromWalletID")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ToWalletID")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
@@ -81,42 +84,21 @@ namespace XLCCoin.Persistence.Migrations
                     b.ToTable("Transites");
                 });
 
-            modelBuilder.Entity("XLCCoin.Domain.Entities.TransiteConnection", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("FromTransiteID")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("ToTransiteID")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("FromTransiteID");
-
-                    b.HasIndex("ToTransiteID");
-
-                    b.ToTable("TransiteConnections");
-                });
-
             modelBuilder.Entity("XLCCoin.Domain.Entities.Wallet", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("NodeID")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
@@ -145,21 +127,6 @@ namespace XLCCoin.Persistence.Migrations
                     b.HasOne("XLCCoin.Domain.Entities.Wallet", "ToWallet")
                         .WithMany("ToTransites")
                         .HasForeignKey("ToWalletID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("XLCCoin.Domain.Entities.TransiteConnection", b =>
-                {
-                    b.HasOne("XLCCoin.Domain.Entities.Transite", "FromTransite")
-                        .WithMany("FromTransiteConnections")
-                        .HasForeignKey("FromTransiteID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("XLCCoin.Domain.Entities.Transite", "ToTransite")
-                        .WithMany("ToTransiteConnections")
-                        .HasForeignKey("ToTransiteID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
