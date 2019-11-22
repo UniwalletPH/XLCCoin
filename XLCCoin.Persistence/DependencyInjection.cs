@@ -12,10 +12,7 @@ namespace XLCCoin.Persistence
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<XLCDbContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("XLCConStr"));
-            });
+            services.AddDbContext<XLCDbContext>();
 
             services.AddScoped<IXLCDbContext>(provider => provider.GetService<XLCDbContext>());
 

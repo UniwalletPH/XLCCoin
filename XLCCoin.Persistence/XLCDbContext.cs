@@ -9,17 +9,15 @@ namespace XLCCoin.Persistence
     {
         private readonly ISecurity security;
 
-        public XLCDbContext(ISecurity security, DbContextOptions<XLCDbContext> option) : base(option)
-        {
-            this.security = security;
-
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+            => options.UseSqlite("Data Source=blogging.db");
 
         public DbSet<Node> Nodes {get;set;}
         public DbSet<Device> Devices {get;set;}
         public DbSet<Wallet> Wallets { get;set; }
         public DbSet<Transite> Transites { get; set; }
         public DbSet<TransiteConnection> TransiteConnections { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
