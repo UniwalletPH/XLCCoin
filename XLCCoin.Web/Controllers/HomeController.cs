@@ -26,7 +26,7 @@ namespace XLCCoin.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return Redirect("AvailableNodes");
         }
 
         public IActionResult Privacy()
