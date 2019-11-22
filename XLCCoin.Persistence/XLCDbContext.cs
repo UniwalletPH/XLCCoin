@@ -10,7 +10,7 @@ namespace XLCCoin.Persistence
         private readonly ISecurity security;
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=blogging.db");
+            => options.UseSqlite("Data Source=DB.xlc");
 
         public DbSet<Node> Nodes {get;set;}
         public DbSet<Device> Devices {get;set;}

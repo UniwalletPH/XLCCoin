@@ -9,8 +9,8 @@ using XLCCoin.Persistence;
 namespace XLCCoin.Persistence.Migrations
 {
     [DbContext(typeof(XLCDbContext))]
-    [Migration("20191121104740_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20191122093627_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
