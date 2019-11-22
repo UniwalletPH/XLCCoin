@@ -10,8 +10,8 @@ using XLCCoin.Persistence;
 namespace XLCCoin.Persistence.Migrations
 {
     [DbContext(typeof(XLCDbContext))]
-    [Migration("20191118133219_tx2")]
-    partial class tx2
+    [Migration("20191121081858_dbXLC")]
+    partial class dbXLC
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
