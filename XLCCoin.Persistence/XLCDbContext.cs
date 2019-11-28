@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using XLCCoin.Application.Interfaces;
 using XLCCoin.Domain.Entities;
@@ -9,8 +11,11 @@ namespace XLCCoin.Persistence
     {
         private readonly ISecurity security;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=DB.xlc");
+        public XLCDbContext(ISecurity security, DbContextOptions<XLCDbContext> option) : base(option)
+        {
+            this.security = security;
+
+        }      
 
         public DbSet<Node> Nodes {get;set;}
         public DbSet<Device> Devices {get;set;}
@@ -18,6 +23,7 @@ namespace XLCCoin.Persistence
         public DbSet<Transite> Transites { get; set; }
         public DbSet<TransiteConnection> TransiteConnections { get; set; }
 
+       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,3 +31,5 @@ namespace XLCCoin.Persistence
         }
     }
 }
+
+
