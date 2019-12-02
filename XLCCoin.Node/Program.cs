@@ -32,20 +32,44 @@ namespace XLCCoin.Node
 
         static async Task Main(string[] args)
         {
-            SendSelfCommand sendSelfCommand = new SendSelfCommand();
-            var _res = await Mediator.Send(sendSelfCommand);
-            Console.WriteLine("Response :{0}", _res.Count());
+            var _url = "http://192.168.1.7:5000/AvailableNodes";
 
 
-            foreach (var item in _res)
-            {
-
-                SaveNodesCommand saveNodesCommand = new SaveNodesCommand(item);
-                var r = await Mediator.Send(saveNodesCommand);
-                Console.WriteLine("Response :{0}", r);
+            var _myEndpoint = await Mediator.Send(new GenerateSelfNodeEndpointCommand());
+            var _sendSelf = new SendSelfCommand(_myEndpoint, _url);
+            
+            var _response = await Mediator.Send(_sendSelf);
 
 
-            }
+            ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint);
+            await Mediator.Send(_listenforcon);
+
+
+            Console.WriteLine(JsonConvert.SerializeObject(_response, Formatting.Indented));
+
+            Console.ReadLine();
+
+
+
+
+
+
+
+
+            //SendSelfCommand sendSelfCommand = new SendSelfCommand();
+            //var _res = await Mediator.Send(sendSelfCommand);
+            //Console.WriteLine("Response :{0}", _res.Count());
+
+
+            //foreach (var item in _res)
+            //{
+
+            //    SaveNodesCommand saveNodesCommand = new SaveNodesCommand(item);
+            //    var r = await Mediator.Send(saveNodesCommand);
+            //    Console.WriteLine("Response :{0}", r);
+
+
+            //}
 
 
 

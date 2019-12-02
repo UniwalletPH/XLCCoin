@@ -11,20 +11,22 @@ using XLCCoin.Application.Interfaces;
 
 namespace XLCCoin.Application.NodeCommands.Commands
 {
-    public class ListenForConnectionCommand : IRequest<string>
+    public class ListenForConnectionCommand : IRequest<IPEndPoint>
     {
-        public string IP { get; set; }
-        public int Port { get; set; }
+        private readonly IPEndPoint myEndpoint;
 
-        public ListenForConnectionCommand(string ip, int port) //constructor
+        public ListenForConnectionCommand(IPEndPoint myEndpoint)
         {
-            IP = ip;
-            Port = port;
+            this.myEndpoint = myEndpoint;
         }
-        public class ListenForConnectionCommandHandler : BaseRequestHandler, IRequestHandler<ListenForConnectionCommand, string>
+
+        public class ListenForConnectionCommandHandler : 
+            BaseRequestHandler, 
+            IRequestHandler<ListenForConnectionCommand, IPEndPoint>
         {
             public ListenForConnectionCommandHandler(IXLCDbContext dbContext) : base(dbContext)
             {
+                
             }
 
             public void HandleDevice(Object obj) //receives bytes stream from the client(s)
@@ -104,11 +106,13 @@ namespace XLCCoin.Application.NodeCommands.Commands
                 }
             }
 
-            public async Task<string> Handle(ListenForConnectionCommand request, CancellationToken cancellationToken)
+            public async Task<IPEndPoint> Handle(ListenForConnectionCommand request, CancellationToken cancellationToken)
             {
+                IPEndPoint _retVal = request.myEndpoint;
+
                 TcpListener server = null; //initialize server
-                IPAddress localAddress = IPAddress.Parse(request.IP);
-                server = new TcpListener(localAddress, request.Port);
+                server = new TcpListener(_retVal.Address, _retVal.Port);
+
                 server.Start();
 
                 try
@@ -128,7 +132,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
                     server.Stop();
                 }
 
-                return "Success";
+                return _retVal;
             }
         }
     }

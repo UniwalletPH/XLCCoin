@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,80 +18,56 @@ namespace XLCCoin.Application.NodeCommands.Commands
 {
     public class SendSelfCommand : IRequest<List<Node>>
     {
-        private readonly IMediator mediator;
+        private readonly string serverUrl;
+        private readonly IPEndPoint myEndpoint;
 
-        public SendSelfCommand()
+        public SendSelfCommand(IPEndPoint myEndpoint, string serverUrl)
         {
+            this.serverUrl = serverUrl;
+            this.myEndpoint = myEndpoint;
         }
 
-        public SendSelfCommand(IMediator mediator)
+        public class SendSelfCommandHandler :
+            BaseRequestHandler,
+            IRequestHandler<SendSelfCommand, List<Node>>
         {
-
-            this.mediator = mediator;
-
-        }
-
-
-        public class SendSelfCommandHandler : BaseRequestHandler, IRequestHandler<SendSelfCommand, List<Node>>
-        {
-
-
 
             public SendSelfCommandHandler(IXLCDbContext dbContext) : base(dbContext)
             {
 
             }
 
-            public string GetLocalIPAddress()
-            {
-                var host = Dns.GetHostEntry(Dns.GetHostName());
-                foreach (var ip in host.AddressList)
-                {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        return ip.ToString();
-                    }
-                }
-                throw new Exception("No network adapters with an IPv4 address in the system!");
-            }
-
             public async Task<List<Node>> Handle(SendSelfCommand request, CancellationToken cancellationToken)
             {
+                Node _myNode = new Node
+                {
+                    ID = Guid.NewGuid(),
+                    IPAddress = request.myEndpoint.Address.ToString(),
+                    Port = request.myEndpoint.Port
+                };
 
+                var _json = JsonConvert.SerializeObject(_myNode);
 
+                using (var _client = new HttpClient())
+                using (var _data = new StringContent(_json, Encoding.UTF8, "application/json"))
+                {
+                    _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                XLCCoin.Domain.Entities.Node MyNode = new Domain.Entities.Node();
+                    var _response = await _client.PostAsync(request.serverUrl, _data);
 
+                    using (var _content = _response.Content)
+                    {
+                        string _result = await _content.ReadAsStringAsync();
 
-                MyNode.ID = Guid.NewGuid();
-                MyNode.IPAddress = GetLocalIPAddress();
-                MyNode.Port = 123;
+                        var _listOfNodes = JsonConvert.DeserializeObject<List<Node>>(_result);
 
-
-                var json = JsonConvert.SerializeObject(MyNode);
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
-                var url = "http://192.168.2.12:5000/AvailableNodes";
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var response = await client.PostAsync(url, data);
-
-                string result = await response.Content.ReadAsStringAsync();
-
-
-                Console.WriteLine(result);
-
-                var ListOfNodes = JsonConvert.DeserializeObject<List<Node>>(result);
-
-
-                return ListOfNodes;
+                        return _listOfNodes
+                            .Where(a => a.IPAddress != request.myEndpoint.ToString()
+                                                        && a.Port != request.myEndpoint.Port)
+                            .ToList();
+                    }
+                }
             }
-
         }
-
     }
-
-
- }
-
+}
