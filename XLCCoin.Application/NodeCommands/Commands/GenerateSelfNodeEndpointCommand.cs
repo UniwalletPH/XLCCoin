@@ -1,8 +1,4 @@
-﻿using APeer.Application.Common.Base;
-using APeer.Application.Common.Interfaces;
-using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
