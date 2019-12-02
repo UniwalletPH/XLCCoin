@@ -33,23 +33,25 @@ namespace XLCCoin.Node
         static async Task Main(string[] args)
         {
             var _url = "http://192.168.1.7:5000/Node/Register";
-            var _url2 = "http://192.168.1.7:5000/Node/Neighbors";
 
 
             var _myEndpoint = await Mediator.Send(new GenerateSelfNodeEndpointCommand());
             var _sendSelf = new SendSelfCommand(_myEndpoint, _url);
-            
+
             var _response = await Mediator.Send(_sendSelf);
+
+            Console.WriteLine(JsonConvert.SerializeObject(_response, Formatting.Indented));
+
+            Console.WriteLine("Hello");
 
 
             ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint);
             await Mediator.Send(_listenforcon);
 
 
-            Console.WriteLine(JsonConvert.SerializeObject(_response, Formatting.Indented));
+            Console.WriteLine("Hi!");
 
             Console.ReadLine();
-
 
 
 

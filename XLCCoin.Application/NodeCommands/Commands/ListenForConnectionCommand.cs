@@ -117,18 +117,20 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
                 try
                 {
-                    while (true)
+                    Thread _listenForConnectionThread = new Thread(() =>
                     {
-                        Console.WriteLine("Waiting for a connection...");
-                        TcpClient client = server.AcceptTcpClient();
-                        Console.WriteLine("Connected!");
-                        Thread t = new Thread(new ParameterizedThreadStart(HandleDevice));
-                        t.Start(client);
-                    }
+                        while (true)
+                        {
+                            TcpClient client = server.AcceptTcpClient();
+                            Thread t = new Thread(new ParameterizedThreadStart(HandleDevice));
+                            t.Start(client);
+                        }
+                    });
+
+                    _listenForConnectionThread.Start();
                 }
                 catch (SocketException e)
                 {
-                    Console.WriteLine("SocketException: {0}", e);
                     server.Stop();
                 }
 
