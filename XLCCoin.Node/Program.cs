@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XLCCoin.Application.NodeCommands.Commands;
@@ -23,9 +24,14 @@ namespace XLCCoin.Node
             }
         }
 
+        static List<NodeVM> ConnectedNodes = new List<NodeVM>();
+
+
         static async Task Main(string[] args)
         {
             var _url = "http://192.168.1.7:5000/Node/Register";
+
+
 
 
             var _myEndpoint = await Mediator.Send(new GenerateSelfNodeEndpointCommand());
@@ -37,8 +43,7 @@ namespace XLCCoin.Node
                 .ToList();
 
 
-            ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint);
-            await Mediator.Send(_listenforcon);
+
 
             foreach (var _node in _neighbors)
             {
@@ -46,13 +51,51 @@ namespace XLCCoin.Node
 
                 TryConnectNodeCommand _connectCmd = new TryConnectNodeCommand(_nodeEndpoint);
 
-                _node.Connection = await Mediator.Send(_connectCmd);
+                TcpClient _client = await Mediator.Send(_connectCmd);
 
-                if (_node.Connection.Connected)
+                if (_client.Connected)
                 {
+                    NodeVM _connectedNode = new NodeVM
+                    {
+                        Connection = _client
+                    };
 
+                    ConnectedNodes.Add(_connectedNode);
                 }
             }
+
+
+
+            Action<TcpClient> _whenConnected = (TcpClient theTcpClientConnected) =>
+            {
+                NodeVM _connectedNode = new NodeVM
+                {
+                    Connection = theTcpClientConnected
+                };
+
+                ConnectedNodes.Add(_connectedNode);
+            };
+
+
+
+
+
+
+            var _node1 = ConnectedNodes.First();
+
+            var _stream = _node1.Connection.GetStream();
+
+            string _message2 = "hey2";
+            byte[] _dataToSend2 = Encoding.ASCII.GetBytes(_message2);
+            _stream.Write(_dataToSend2, 0, _dataToSend2.Length);
+
+
+            ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint, _whenConnected);
+            await Mediator.Send(_listenforcon);
+
+
+
+
 
 
             // 1: 192.168.1.1

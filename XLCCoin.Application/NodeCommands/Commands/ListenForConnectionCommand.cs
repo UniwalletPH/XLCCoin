@@ -14,10 +14,12 @@ namespace XLCCoin.Application.NodeCommands.Commands
     public class ListenForConnectionCommand : IRequest<IPEndPoint>
     {
         private readonly IPEndPoint myEndpoint;
+        private readonly Action<TcpClient> whenConnected;
 
-        public ListenForConnectionCommand(IPEndPoint myEndpoint)
+        public ListenForConnectionCommand(IPEndPoint myEndpoint, Action<TcpClient> whenConnected)
         {
             this.myEndpoint = myEndpoint;
+            this.whenConnected = whenConnected;
         }
 
         public class ListenForConnectionCommandHandler : 
@@ -110,8 +112,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
             {
                 IPEndPoint _retVal = request.myEndpoint;
 
-                TcpListener server = null; //initialize server
-                server = new TcpListener(_retVal.Address, _retVal.Port);
+                TcpListener server = new TcpListener(_retVal.Address, _retVal.Port);
 
                 server.Start();
 
@@ -122,6 +123,10 @@ namespace XLCCoin.Application.NodeCommands.Commands
                         while (true)
                         {
                             TcpClient client = server.AcceptTcpClient();
+
+                            request.whenConnected(client);
+
+
                             //Thread t = new Thread(new ParameterizedThreadStart(HandleDevice));
                             //t.Start(client);
                         }

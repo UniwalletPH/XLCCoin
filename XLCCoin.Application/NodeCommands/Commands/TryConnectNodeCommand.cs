@@ -28,11 +28,11 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
             public async Task<TcpClient> Handle(TryConnectNodeCommand request, CancellationToken cancellationToken)
             {
-                TcpClient _client = new TcpClient();
 
                 string _ip = request.endpoint.Address.ToString();
                 int _port = request.endpoint.Port;
 
+                TcpClient _client = new TcpClient();
 
                 try
                 {
