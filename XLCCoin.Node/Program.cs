@@ -32,7 +32,8 @@ namespace XLCCoin.Node
 
         static async Task Main(string[] args)
         {
-            var _url = "http://192.168.1.7:5000/AvailableNodes";
+            var _url = "http://192.168.1.7:5000/Node/Register";
+            var _url2 = "http://192.168.1.7:5000/Node/Neighbors";
 
 
             var _myEndpoint = await Mediator.Send(new GenerateSelfNodeEndpointCommand());

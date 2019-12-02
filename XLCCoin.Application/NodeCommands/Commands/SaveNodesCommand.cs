@@ -11,49 +11,39 @@ using XLCCoin.Domain.Entities;
 
 namespace XLCCoin.Application.NodeCommands.Commands
 {
-    public class SaveNodesCommand : IRequest<Guid>
+    public class SaveNodeCommand : IRequest<Guid>
     {
-
-
         private Node node;
-        private IMediator mediator;
 
-        public SaveNodesCommand(Node node)
+        public SaveNodeCommand(Node node)
         {
-
             this.node = node;
-        
-        
         }
 
-        public class SaveNodesCommandHandler : BaseRequestHandler, IRequestHandler<SaveNodesCommand, Guid>
+        public class SaveNodeCommandHandler : 
+            BaseRequestHandler, 
+            IRequestHandler<SaveNodeCommand, Guid>
         {
-
-
-            public SaveNodesCommandHandler(IXLCDbContext dbContext) : base(dbContext)
+            public SaveNodeCommandHandler(IXLCDbContext dbContext) : base(dbContext)
             {
-
 
             }
 
-            public async Task<Guid> Handle(SaveNodesCommand request, CancellationToken cancellationToken)
+            public async Task<Guid> Handle(SaveNodeCommand request, CancellationToken cancellationToken)
             {
-                Node node = new Node
+                Node _node = new Node
                 {
                     ID = request.node.ID,
                     IPAddress = request.node.IPAddress,
                     Port = request.node.Port,
                     Geolocation = request.node.Geolocation,
                     IsBehindNAT = request.node.IsBehindNAT,
-                    Device = request.node.Device,
-                    Wallets = request.node.Wallets
-
                 };
 
-                dbContext.Nodes.Add(node);
+                dbContext.Nodes.Add(_node);
                 await dbContext.SaveChangesAsync();
 
-                return node.ID;
+                return _node.ID;
 
             }
         }
