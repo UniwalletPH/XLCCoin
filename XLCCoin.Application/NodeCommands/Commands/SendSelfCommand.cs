@@ -12,11 +12,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using XLCCoin.Application.Common.Base;
 using XLCCoin.Application.Interfaces;
+using XLCCoin.Application.NodeCommands.Queries;
 using XLCCoin.Domain.Entities;
 
 namespace XLCCoin.Application.NodeCommands.Commands
 {
-    public class SendSelfCommand : IRequest<List<Node>>
+    public class SendSelfCommand : IRequest<List<NodeVM>>
     {
         private readonly string serverUrl;
         private readonly IPEndPoint myEndpoint;
@@ -29,7 +30,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
         public class SendSelfCommandHandler :
             BaseRequestHandler,
-            IRequestHandler<SendSelfCommand, List<Node>>
+            IRequestHandler<SendSelfCommand, List<NodeVM>>
         {
 
             public SendSelfCommandHandler(IXLCDbContext dbContext) : base(dbContext)
@@ -37,7 +38,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
             }
 
-            public async Task<List<Node>> Handle(SendSelfCommand request, CancellationToken cancellationToken)
+            public async Task<List<NodeVM>> Handle(SendSelfCommand request, CancellationToken cancellationToken)
             {
                 Node _myNode = new Node
                 {
@@ -59,7 +60,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
                     {
                         string _result = await _content.ReadAsStringAsync();
 
-                        var _listOfNodes = JsonConvert.DeserializeObject<List<Node>>(_result);
+                        var _listOfNodes = JsonConvert.DeserializeObject<List<NodeVM>>(_result);
 
                         return _listOfNodes
                             .Where(a => a.IPAddress != request.myEndpoint.ToString()

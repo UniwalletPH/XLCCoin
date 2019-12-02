@@ -11,61 +11,64 @@ using XLCCoin.Application.Interfaces;
 
 namespace XLCCoin.Application.NodeCommands.Commands
 {
-    public class TryConnectNodeCommand : IRequest<string>
+    public class TryConnectNodeCommand : IRequest<TcpClient>
     {
-        public string Server { get; set; }
-        public string Message { get; set; }
+        private readonly IPEndPoint endpoint;
 
-        public TryConnectNodeCommand(String server) //constructor
+        public TryConnectNodeCommand(IPEndPoint endpoint)
         {
-            Server = server;
+            this.endpoint = endpoint;
         }
 
-        public class TryConnectNodeCommandHandler : BaseRequestHandler, IRequestHandler<TryConnectNodeCommand, string>
+        public class TryConnectNodeCommandHandler : BaseRequestHandler, IRequestHandler<TryConnectNodeCommand, TcpClient>
         {
             public TryConnectNodeCommandHandler(IXLCDbContext dbContext) : base(dbContext)
             {
             }
 
-            public async Task<string> Handle(TryConnectNodeCommand request, CancellationToken cancellationToken)
+            public async Task<TcpClient> Handle(TryConnectNodeCommand request, CancellationToken cancellationToken)
             {
+                TcpClient _client = new TcpClient();
+
+                string _ip = request.endpoint.Address.ToString();
+                int _port = request.endpoint.Port;
+
+
                 try
                 {
-                    Int32 port = 13000;
 
-                    TcpClient client = new TcpClient(request.Server, port);
-                    NetworkStream stream = client.GetStream();
 
-                    while (stream != null)
-                    {
-                        //Translate the Message into ASCII.
-                        Console.Write("Please send a message:");
-                        string msgs = Console.ReadLine();
-                        Byte[] data = System.Text.Encoding.ASCII.GetBytes(msgs);
+                    _client.Connect(_ip, _port);
+                    //using (_client = new TcpClient(request.endpoint.Address.ToString(), request.endpoint.Port))
+                    //using (NetworkStream _stream = _client.GetStream())
+                    //{
+                    //    while (_stream != null)
+                    //    {
+                    //        string msgs = Console.ReadLine();
+                    //        Byte[] data = System.Text.Encoding.ASCII.GetBytes(msgs);
 
-                        //Send the message to the connected TcpServer.
-                        stream.Write(data, 0, data.Length);
-                        Console.WriteLine("Message Sent: {0}", msgs);
+                    //        //Send the message to the connected TcpServer.
+                    //        _stream.Write(data, 0, data.Length);
+                    //        Console.WriteLine("Message Sent: {0}", msgs);
 
-                        //Bytes Array to receive Server Response.
-                        data = new Byte[256];
-                        String response = String.Empty;
+                    //        //Bytes Array to receive Server Response.
+                    //        data = new Byte[256];
+                    //        String response = String.Empty;
 
-                        //Read the Tcp Server Response Bytes.
-                        Int32 bytes = stream.Read(data, 0, data.Length);
-                        response = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-                        Console.WriteLine("Received: {0}", response);
+                    //        //Read the Tcp Server Response Bytes.
+                    //        Int32 bytes = _stream.Read(data, 0, data.Length);
+                    //        response = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                    //        Console.WriteLine("Received: {0}", response);
 
-                    }
-                    stream.Close();
-                    client.Close();
+                    //    }
+                    //}
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception: {0}", e);
                 }
-                Console.Read();
-                return "Success";
+
+                return _client;
             }
         }
     }

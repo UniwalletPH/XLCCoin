@@ -122,8 +122,8 @@ namespace XLCCoin.Application.NodeCommands.Commands
                         while (true)
                         {
                             TcpClient client = server.AcceptTcpClient();
-                            Thread t = new Thread(new ParameterizedThreadStart(HandleDevice));
-                            t.Start(client);
+                            //Thread t = new Thread(new ParameterizedThreadStart(HandleDevice));
+                            //t.Start(client);
                         }
                     });
 
