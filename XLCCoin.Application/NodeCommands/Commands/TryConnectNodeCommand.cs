@@ -22,8 +22,11 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
         public class TryConnectNodeCommandHandler : BaseRequestHandler, IRequestHandler<TryConnectNodeCommand, TcpClient>
         {
-            public TryConnectNodeCommandHandler(IXLCDbContext dbContext) : base(dbContext)
+            private readonly IMediator mediator;
+
+            public TryConnectNodeCommandHandler(IXLCDbContext dbContext, IMediator mediator) : base(dbContext)
             {
+                this.mediator = mediator;
             }
 
             public async Task<TcpClient> Handle(TryConnectNodeCommand request, CancellationToken cancellationToken)
@@ -36,8 +39,6 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
                 try
                 {
-
-
                     _client.Connect(_ip, _port);
                     //using (_client = new TcpClient(request.endpoint.Address.ToString(), request.endpoint.Port))
                     //using (NetworkStream _stream = _client.GetStream())
