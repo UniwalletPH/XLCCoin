@@ -50,6 +50,8 @@ namespace XLCCoin.Node
             var _myEndpoint = await Mediator.Send(new GenerateSelfNodeEndpointCommand());
             #endregion
 
+
+
             #region Step 2
             Action<TcpClient> _whenConnected = (TcpClient theTcpClientConnected) =>
                 {
@@ -63,6 +65,10 @@ namespace XLCCoin.Node
             ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint, _whenConnected);
             await Mediator.Send(_listenforcon);
             #endregion
+
+
+
+
 
             #region Step 3
             var _sendSelf = new SendSelfCommand(_myEndpoint, _url);
@@ -83,6 +89,12 @@ namespace XLCCoin.Node
                 .ToList();
             #endregion
 
+
+
+
+
+
+
             #region Step 5
             foreach (var _node in _neighbors)
             {
@@ -101,30 +113,10 @@ namespace XLCCoin.Node
 
                     ConnectedNodes.Add(_connectedNode);
                 }
-            }
+            } 
             #endregion
-
-            #region Step 6
-            Action<string> messageZ = (string msg) =>
-                {
-                    Console.WriteLine("The message is: " + msg);
-                };
-
-            var FirstNode = ConnectedNodes.First();
-
-            await Mediator.Send(new ListenMessageCommand(messageZ, FirstNode));
 
             Console.ReadLine();
-            #endregion
-
-
-            #region Step 7
-            Console.Write("Please send a message: ");
-            string _msgToSend = Console.ReadLine();
-
-            await Mediator.Send(new SendMessageCommand(_msgToSend, FirstNode)); 
-            #endregion
-
         }
     }
 }
