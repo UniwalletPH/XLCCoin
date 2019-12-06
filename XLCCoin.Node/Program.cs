@@ -24,27 +24,74 @@ namespace XLCCoin.Node
             }
         }
 
-        static List<NodeVM> ConnectedNodes = new List<NodeVM>();
 
 
         static async Task Main(string[] args)
         {
+            NodeVM _testNode = new NodeVM();
+
+            _testNode.SendMessage("The quick brown fox jumps over the lazy dog");
+            return;
+
+
+
+
+
+
+
+
+
             var _url = "http://192.168.1.7:5000/Node/Register";
 
+            List<NodeVM> ConnectedNodes = new List<NodeVM>();
 
 
-
+            #region Step 1
             var _myEndpoint = await Mediator.Send(new GenerateSelfNodeEndpointCommand());
+            #endregion
+
+
+
+            #region Step 2
+            Action<TcpClient> _whenConnected = (TcpClient theTcpClientConnected) =>
+                {
+                    NodeVM _connectedNode = new NodeVM
+                    {
+                        Client = theTcpClientConnected
+                    };
+
+                    ConnectedNodes.Add(_connectedNode);
+                };
+            ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint, _whenConnected);
+            await Mediator.Send(_listenforcon);
+            #endregion
+
+
+
+
+
+
+
+            #region Step 3
             var _sendSelf = new SendSelfCommand(_myEndpoint, _url);
 
             List<NodeVM> _neighbors = await Mediator.Send(_sendSelf);
 
             _neighbors = _neighbors.Take(1)
                 .ToList();
+            #endregion
+
+            #region Step 4
+            // Get Neighbor Command 
+            #endregion
 
 
 
 
+
+
+
+            #region Step 5
             foreach (var _node in _neighbors)
             {
                 IPEndPoint _nodeEndpoint = new IPEndPoint(IPAddress.Parse(_node.IPAddress), _node.Port);
@@ -57,61 +104,13 @@ namespace XLCCoin.Node
                 {
                     NodeVM _connectedNode = new NodeVM
                     {
-                        Connection = _client
+                        Client = _client
                     };
 
                     ConnectedNodes.Add(_connectedNode);
-
-                    SaveNodeCommand _saveNode = new SaveNodeCommand(_connectedNode);
-                    var _res = await Mediator.Send(_saveNode);
                 }
-            }
-
-
-
-
-            Action<TcpClient> _whenConnected = (TcpClient theTcpClientConnected) =>
-            {
-                NodeVM _connectedNode = new NodeVM
-                {
-                    Connection = theTcpClientConnected
-                };
-
-                ConnectedNodes.Add(_connectedNode);
-            };
-
-
-
-
-
-
-            var _node1 = ConnectedNodes.First();
-
-            var _stream = _node1.Connection.GetStream();
-
-            string _message2 = "hey2";
-            byte[] _dataToSend2 = Encoding.ASCII.GetBytes(_message2);
-            _stream.Write(_dataToSend2, 0, _dataToSend2.Length);
-
-
-            ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint, _whenConnected);
-            await Mediator.Send(_listenforcon);
-
-
-
-
-
-
-            // 1: 192.168.1.1
-            // 2: 192.168.1.2
-
-            //var _node = _neighbors.Where(a => a.IPAddress == "192.168.1.2")
-            //    .SingleOrDefault();
-
-            //if (_node != null)
-            //{
-            //    _node.SendMessage("Hey!");
-            //}
+            } 
+            #endregion
 
             Console.ReadLine();
         }
