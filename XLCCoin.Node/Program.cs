@@ -49,6 +49,11 @@ namespace XLCCoin.Node
                     };
 
                     ConnectedNodes.Add(_connectedNode);
+
+                    var x = Mediator.Send(new ListenMessageCommand((string msg) =>
+                    {
+                        Console.WriteLine("The message is: " + msg);
+                    }, _connectedNode)).Result;
                 };
             ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint, _whenConnected);
             await Mediator.Send(_listenforcon);
@@ -94,13 +99,13 @@ namespace XLCCoin.Node
             #endregion
 
             #region Step 6  //ReceiveMessage Command
-            Action<string> messageZ = (string msg) =>
-                {
-                    Console.WriteLine("The message is: " + msg);
-                };
+           
             foreach (var item in ConnectedNodes)
             {
-                await Mediator.Send(new ListenMessageCommand(messageZ, item));
+                await Mediator.Send(new ListenMessageCommand((string msg) =>
+                {
+                    Console.WriteLine("The message is: " + msg);
+                }, item));
             }
             #endregion
 
