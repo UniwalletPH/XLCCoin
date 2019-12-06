@@ -61,8 +61,12 @@ namespace XLCCoin.Node
                     };
 
                     ConnectedNodes.Add(_connectedNode);
+
+                    SaveNodeCommand _saveNode = new SaveNodeCommand(_connectedNode);
+                    var _res = await Mediator.Send(_saveNode);
                 }
             }
+
 
 
 

@@ -7,15 +7,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using XLCCoin.Application.Common.Base;
 using XLCCoin.Application.Interfaces;
+using XLCCoin.Application.NodeCommands.Queries;
 using XLCCoin.Domain.Entities;
 
 namespace XLCCoin.Application.NodeCommands.Commands
 {
     public class SaveNodeCommand : IRequest<Guid>
     {
-        private Node node;
-
-        public SaveNodeCommand(Node node)
+        private NodeVM node;
+        
+        public SaveNodeCommand(NodeVM node)
         {
             this.node = node;
         }
