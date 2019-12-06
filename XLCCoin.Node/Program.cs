@@ -115,13 +115,10 @@ namespace XLCCoin.Node
             switch (_cmdNumber)
             {
                 case "1":
-                    var _getNeighborCmd = new GetNeighborsCommand(_myEndpoint, _url2);
-
-                    List<NodeVM> _neighborsCmd = await Mediator.Send(_getNeighbors);
 
                     Console.WriteLine("Fetching neighbors...");
 
-                    foreach (var item in _neighborsCmd)
+                    foreach (var item in ConnectedNodes)
                     {
                         Console.WriteLine(item.ID + item.IPAddress + item.Port);
                     }
@@ -130,11 +127,9 @@ namespace XLCCoin.Node
                     goto start;
 
                 case "2":
-                    var _getNeighborCmd1 = new GetNeighborsCommand(_myEndpoint, _url2);
-                    List<NodeVM> _neighborsCmd1 = await Mediator.Send(_getNeighbors);
 
                     int neighborID = 0;
-                    foreach (var item in _neighborsCmd1)
+                    foreach (var item in ConnectedNodes)
                     {
                         Console.WriteLine("ID: {0} | IP Address: {1} | Port: {2}", neighborID, item.IPAddress, item.Port);
                         neighborID++;
@@ -143,7 +138,7 @@ namespace XLCCoin.Node
                     string _neighborIdToSend = Console.ReadLine();
                     int ID = int.Parse(_neighborIdToSend);
 
-                    var _selectedNode = _neighborsCmd1[ID];
+                    var _selectedNode = ConnectedNodes[ID];
                     Console.WriteLine("ID selected: " + _selectedNode.IPAddress + _selectedNode.Port);
 
 
