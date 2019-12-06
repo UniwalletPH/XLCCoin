@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,14 +41,28 @@ namespace XLCCoin.Application.NodeCommands.Commands
                             int i;
 
                             StringBuilder _sb = new StringBuilder();
-                            while ((i = _myStream.Read(_data, 0, _data.Length)) != 0
-                                     && _myStream.DataAvailable)
-                            {
-                                string _message = Encoding.ASCII.GetString(_data);
 
+
+                            do
+                            {
+                                i = _myStream.Read(_data, 0, _data.Length);
+                                string _message = Encoding.ASCII.GetString(_data.Take(i).ToArray());
                                 _sb.Append(_message);
-                                Thread.Sleep(1);
                             }
+
+
+                            while (_myStream.DataAvailable);
+                            //Span<byte> x = new Span<byte>();
+                            //int y = _myStream.Read(x);
+
+
+                            //while ((i = _myStream.Read(_data, 0, _data.Length)) != 0
+                            //         //&& _myStream.DataAvailable
+                            //         )
+                            //{
+                            //    
+                            //    _sb.Append(_message);
+                            //}
 
                             request.messageX(_sb.ToString());
                         }
