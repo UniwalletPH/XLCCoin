@@ -31,8 +31,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
                 var client = request.connectedNodes.Client;
                 var _myStream = client.GetStream();
 
-                new Thread(() =>
-                {
+                new Thread(()=> {
                     while (client.Connected)
                     {
                         try
@@ -47,6 +46,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
                                 string _message = Encoding.ASCII.GetString(_data);
 
                                 _sb.Append(_message);
+                                Thread.Sleep(1);
                             }
 
                             request.messageX(_sb.ToString());
@@ -56,7 +56,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
                             Console.WriteLine(c);
                         }
                     }
-                }).Start();
+                }) .Start();
                 
                 return Unit.Value;
             }
