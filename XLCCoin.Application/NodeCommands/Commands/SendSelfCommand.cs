@@ -40,7 +40,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
             public async Task<string> Handle(SendSelfCommand request, CancellationToken cancellationToken)
             {
-                Node _myNode = new Node
+                NodeVM _myNode = new NodeVM
                 {
                     ID = Guid.NewGuid(),
                     IPAddress = request.myEndpoint.Address.ToString(),

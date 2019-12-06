@@ -31,7 +31,7 @@ namespace XLCCoin.Web.Controllers
         [HttpPost]
         public async Task<JsonResult> Register([FromBody]NodeVM node)
         {
-            NodeViewModel _model = new NodeViewModel
+            NodeVM _model = new NodeVM
             {
                 ID = node.ID,
                 Port = node.Port,
