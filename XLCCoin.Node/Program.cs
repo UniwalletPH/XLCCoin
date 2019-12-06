@@ -67,14 +67,20 @@ namespace XLCCoin.Node
             #region Step 3
             var _sendSelf = new SendSelfCommand(_myEndpoint, _url);
 
-            List<NodeVM> _neighbors = await Mediator.Send(_sendSelf);
+            await Mediator.Send(_sendSelf);
 
-            _neighbors = _neighbors.Take(1)
-                .ToList();
+
+
             #endregion
 
             #region Step 4
             // Get Neighbor Command 
+            var _getNeighbors = new GetNeighborsCommand(_myEndpoint, _url);
+
+            List<NodeVM> _neighbors = await Mediator.Send(_getNeighbors);
+
+            _neighbors = _neighbors.Take(1)
+                .ToList();
             #endregion
 
             #region Step 5

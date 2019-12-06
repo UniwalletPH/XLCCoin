@@ -10,6 +10,7 @@ using XLCCoin.Domain.Entities;
 using XLCCoin.Web.Models;
 using XLCCoin.Persistence;
 using XLCCoin.Application.NodeCommands.Commands;
+using XLCCoin.Application.NodeCommands.Queries;
 
 namespace XLCCoin.Web.Controllers
 {
@@ -28,9 +29,9 @@ namespace XLCCoin.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Register([FromBody]Node node)
+        public async Task<JsonResult> Register([FromBody]NodeVM node)
         {
-            NodeViewModel _model = new NodeViewModel
+            NodeVM _model = new NodeVM
             {
                 ID = node.ID,
                 Port = node.Port,

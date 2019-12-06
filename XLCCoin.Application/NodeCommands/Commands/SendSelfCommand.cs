@@ -17,7 +17,7 @@ using XLCCoin.Domain.Entities;
 
 namespace XLCCoin.Application.NodeCommands.Commands
 {
-    public class SendSelfCommand : IRequest<List<NodeVM>>
+    public class SendSelfCommand : IRequest<string>
     {
         private readonly string serverUrl;
         private readonly IPEndPoint myEndpoint;
@@ -30,7 +30,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
         public class SendSelfCommandHandler :
             BaseRequestHandler,
-            IRequestHandler<SendSelfCommand, List<NodeVM>>
+            IRequestHandler<SendSelfCommand, string>
         {
 
             public SendSelfCommandHandler(IXLCDbContext dbContext) : base(dbContext)
@@ -38,9 +38,9 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
             }
 
-            public async Task<List<NodeVM>> Handle(SendSelfCommand request, CancellationToken cancellationToken)
+            public async Task<string> Handle(SendSelfCommand request, CancellationToken cancellationToken)
             {
-                Node _myNode = new Node
+                NodeVM _myNode = new NodeVM
                 {
                     ID = Guid.NewGuid(),
                     IPAddress = request.myEndpoint.Address.ToString(),
@@ -56,17 +56,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
                     var _response = await _client.PostAsync(request.serverUrl, _data);
 
-                    using (var _content = _response.Content)
-                    {
-                        string _result = await _content.ReadAsStringAsync();
-
-                        var _listOfNodes = JsonConvert.DeserializeObject<List<NodeVM>>(_result);
-
-                        return _listOfNodes
-                            .Where(a => a.IPAddress != request.myEndpoint.ToString()
-                                                        && a.Port != request.myEndpoint.Port)
-                            .ToList();
-                    }
+                    return "Success";
                 }
             }
         }
