@@ -47,6 +47,10 @@ namespace XLCCoin.Application.NodeCommands.Commands
                         string _result = await _content.ReadAsStringAsync();
 
                         var _listOfNodes = JsonConvert.DeserializeObject<List<NodeVM>>(_result);
+                        if (_listOfNodes == null)
+                        {
+                            return new List<NodeVM>();
+                        }
 
                         return _listOfNodes.Where(a => a.IPAddress != request.myEndpoint.ToString()
                                                         && a.Port != request.myEndpoint.Port)
