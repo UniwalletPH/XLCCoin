@@ -126,7 +126,6 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
                             request.whenConnected(client);
 
-
                             //Thread t = new Thread(new ParameterizedThreadStart(HandleDevice));
                             //t.Start(client);
                         }
