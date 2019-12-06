@@ -31,30 +31,33 @@ namespace XLCCoin.Application.NodeCommands.Commands
                 var client = request.connectedNodes.Client;
                 var _myStream = client.GetStream();
 
-
-                while (client.Connected)
+                new Thread(() =>
                 {
-                    try
+                    while (client.Connected)
                     {
-                        byte[] _data = new byte[10];
-                        int i;
-
-                        StringBuilder _sb = new StringBuilder();
-                        while ((i = _myStream.Read(_data, 0, _data.Length)) != 0
-                                 && _myStream.DataAvailable)
+                        try
                         {
-                            string _message = Encoding.ASCII.GetString(_data);
+                            byte[] _data = new byte[10];
+                            int i;
 
-                            _sb.Append(_message);
+                            StringBuilder _sb = new StringBuilder();
+                            while ((i = _myStream.Read(_data, 0, _data.Length)) != 0
+                                     && _myStream.DataAvailable)
+                            {
+                                string _message = Encoding.ASCII.GetString(_data);
+
+                                _sb.Append(_message);
+                            }
+
+                            request.messageX(_sb.ToString());
                         }
-
-                        request.messageX(_sb.ToString());
+                        catch (Exception c)
+                        {
+                            Console.WriteLine(c);
+                        }
                     }
-                    catch (Exception c)
-                    {
-                        Console.WriteLine(c);
-                    }
-                }
+                }).Start();
+                
                 return Unit.Value;
             }
         }
