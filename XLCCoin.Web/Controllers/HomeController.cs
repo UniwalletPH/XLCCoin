@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using XLCCoin.Application.Interfaces;
-using XLCCoin.Persistence;
 using XLCCoin.Web.Models;
 
 namespace XLCCoin.Web.Controllers

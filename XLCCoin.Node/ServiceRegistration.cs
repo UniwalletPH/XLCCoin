@@ -7,7 +7,8 @@ using System.IO;
 using System.Text;
 using XLCCoin.Application;
 using XLCCoin.Application.Interfaces;
-using XLCCoin.Persistence;
+using XLCCoin.Infrastructure;
+using XLCCoin.Infrastructure.Persistence;
 
 namespace XLCCoin.Node
 {
@@ -31,10 +32,9 @@ namespace XLCCoin.Node
                 {
                     options.UseSqlServer(_config.GetConnectionString("XLCConStr"));
                 })
-                .AddScoped<ISecurity, NetworkSecurity>()
                 .AddScoped<IXLCDbContext>(provider => provider.GetService<XLCDbContext>());
 
-                _services.AddPersistence(_config);
+                _services.AddInfrastructure(_config);
                 _services.AddApplication();
 
                 var _serviceProvider = _services.BuildServiceProvider();

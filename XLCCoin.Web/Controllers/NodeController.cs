@@ -6,11 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using XLCCoin.Domain.Entities;
-using XLCCoin.Web.Models;
-using XLCCoin.Persistence;
 using XLCCoin.Application.NodeCommands.Commands;
 using XLCCoin.Application.NodeCommands.Queries;
+using XLCCoin.Web.Models;
 
 namespace XLCCoin.Web.Controllers
 {

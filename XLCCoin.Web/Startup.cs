@@ -13,7 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using XLCCoin.Application;
 using XLCCoin.Application.Interfaces;
-using XLCCoin.Persistence;
+using XLCCoin.Infrastructure;
+using XLCCoin.Infrastructure.Persistence;
 
 namespace XLCCoin.Web
 {
@@ -29,8 +30,6 @@ namespace XLCCoin.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ISecurity, NetworkSecurity>();
-
             services.AddDbContext<XLCDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("XLCConStr"));
@@ -38,7 +37,7 @@ namespace XLCCoin.Web
 
             services.AddScoped<IXLCDbContext>(provider => provider.GetService<XLCDbContext>());
 
-            services.AddPersistence(Configuration);
+            services.AddInfrastructure(Configuration);
             services.AddApplication();
 
             services.AddControllersWithViews();
