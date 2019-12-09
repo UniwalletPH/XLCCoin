@@ -13,11 +13,11 @@ namespace XLCCoin.Application.NodeCommands.Commands
     public class SendMessageCommand : IRequest<bool>
     {
         private readonly string msg;
-        private readonly NodeVM connectedNodes;
-        public SendMessageCommand(string msg, NodeVM connectedNodes)
+        private readonly NodeVM destination;
+        public SendMessageCommand(NodeVM destination, string msg)
         {
             this.msg = msg;
-            this.connectedNodes = connectedNodes;
+            this.destination = destination;
         }
         public class SendMessageCommandHandler : BaseRequestHandler, IRequestHandler<SendMessageCommand, bool>
         {
@@ -28,7 +28,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
             public async Task<bool> Handle(SendMessageCommand request, CancellationToken cancellationToken)
             {
-                var _client = request.connectedNodes.Client;
+                var _client = request.destination.Client;
                 var _myStream = _client.GetStream();
 
 

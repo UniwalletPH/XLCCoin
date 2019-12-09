@@ -21,6 +21,11 @@ namespace XLCCoin.Application.NodeCommands.Queries
 
         public TcpClient Client { get; set; }
 
+
+        public List<TranSiteVM> TIPS { get; set; }
+
+        public int Age { get; set; }
+
     }
 }
 

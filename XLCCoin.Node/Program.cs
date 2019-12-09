@@ -41,7 +41,7 @@ namespace XLCCoin.Node
             #endregion
 
             #region Step 2 //ListenForConnection Command
-            Action<TcpClient> _whenConnected = (TcpClient theTcpClientConnected) =>
+            Action<TcpClient> _whenConnected = async (TcpClient theTcpClientConnected) =>
                 {
                     NodeVM _connectedNode = new NodeVM
                     {
@@ -50,11 +50,12 @@ namespace XLCCoin.Node
 
                     ConnectedNodes.Add(_connectedNode);
 
-                    var x = Mediator.Send(new ListenMessageCommand((string msg) =>
+                   await Mediator.Send(new ListenMessageCommand(_connectedNode, (string msg) =>
                     {
                         Console.WriteLine("The message is: " + msg);
-                    }, _connectedNode)).Result;
+                    }));
                 };
+
             ListenForConnectionCommand _listenforcon = new ListenForConnectionCommand(_myEndpoint, _whenConnected);
             await Mediator.Send(_listenforcon);
             Console.WriteLine("Listening for connection...");
@@ -77,6 +78,8 @@ namespace XLCCoin.Node
             #endregion
 
             #region Step 5  //TryConnectNode Command
+            List<TranSiteVM> _transites = new List<TranSiteVM>();
+
             foreach (var _node in _neighbors)
             {
                 IPEndPoint _nodeEndpoint = new IPEndPoint(IPAddress.Parse(_node.IPAddress), _node.Port);
@@ -89,25 +92,36 @@ namespace XLCCoin.Node
                 {
                     NodeVM _connectedNode = new NodeVM
                     {
-                        Client = _client
+                        Client = _client,
+                        Age = 9
                     };
 
+                    bool hasAllTips = true;
+
+                    foreach (var item in ConnectedNodes)
+                    {
+                        if (item.TIPS == null)
+                        {
+                            hasAllTips = false;
+                        }
+                    }
+
+                    if (hasAllTips)
+                    {
+                        // Randommize All TIps
+                    }
+
+                    
                     ConnectedNodes.Add(_connectedNode);
+                    await Mediator.Send(new ListenMessageCommand(_connectedNode,(string msg) =>
+                    {
+                        Console.WriteLine("The message is: " + msg);
+                    }));
                 }
             }
             Console.WriteLine("Connecting node...");
             #endregion
 
-            #region Step 6  //ReceiveMessage Command
-           
-            foreach (var item in ConnectedNodes)
-            {
-                await Mediator.Send(new ListenMessageCommand((string msg) =>
-                {
-                    Console.WriteLine("The message is: " + msg);
-                }, item));
-            }
-            #endregion
 
             Console.WriteLine("1 - List of all connected nodes");
             Console.WriteLine("2 - Send a message");
@@ -149,7 +163,10 @@ namespace XLCCoin.Node
 
                     Console.Write("Please send a message: ");
                     string _msgToSend = Console.ReadLine();
-                    await Mediator.Send(new SendMessageCommand(_msgToSend, _selectedNode));
+                    //await Mediator.Send(new SendMessageCommand(_selectedNode, _msgToSend));
+
+                    await Mediator.Send(new SendFindTipCommand(_selectedNode));
+
 
                     goto start;
 

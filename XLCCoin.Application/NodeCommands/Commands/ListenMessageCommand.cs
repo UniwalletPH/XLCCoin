@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,25 +15,31 @@ namespace XLCCoin.Application.NodeCommands.Commands
     public class ListenMessageCommand : IRequest
     {
         private readonly Action<string> messageX;
-        private readonly NodeVM connectedNodes;
-        public ListenMessageCommand(Action<string> messageY, NodeVM connectedNodes)
+        private readonly NodeVM source;
+        public ListenMessageCommand(NodeVM source, Action<string> messageY)
         {
             this.messageX = messageY;
-            this.connectedNodes = connectedNodes;
+            this.source = source;
         }
 
         public class ListenMessageCommandHandler : BaseRequestHandler, IRequestHandler<ListenMessageCommand>
         {
-            public ListenMessageCommandHandler(IXLCDbContext dbContext) : base(dbContext)
+            private readonly IMediator mediator;
+            public ListenMessageCommandHandler(IMediator mediator, IXLCDbContext dbContext) : base(dbContext)
             {
             }
 
             public async Task<Unit> Handle(ListenMessageCommand request, CancellationToken cancellationToken)
             {
-                var client = request.connectedNodes.Client;
+                var client = request.source.Client;
                 var _myStream = client.GetStream();
 
-                new Thread(()=> {
+
+                var _tep = request.source.Age;
+
+                request.source.Age = 10;
+
+                new Thread(async ()=> {
                     while (client.Connected)
                     {
                         try
@@ -41,7 +48,6 @@ namespace XLCCoin.Application.NodeCommands.Commands
                             int i;
 
                             StringBuilder _sb = new StringBuilder();
-
 
                             do
                             {
@@ -52,17 +58,33 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
 
                             while (_myStream.DataAvailable);
-                            //Span<byte> x = new Span<byte>();
-                            //int y = _myStream.Read(x);
+
+                            var _receiveRequest = JsonConvert.DeserializeObject<XLCmdVM>(_sb.ToString());
+                            
+                            switch (_receiveRequest.CommandName)
+                            {
+                                case "FindTip":
+
+                                    var _findTipResponse = await mediator.Send(new FindTipCommand());
+                                    _receiveRequest.CommandName = "FindTipResponse";
+                                    _receiveRequest.Response = _findTipResponse;
+                                    var _responseRequest = JsonConvert.SerializeObject(_receiveRequest);
+
+                                    await mediator.Send(new SendMessageCommand(request.source, _responseRequest));
+
+                                    break;
 
 
-                            //while ((i = _myStream.Read(_data, 0, _data.Length)) != 0
-                            //         //&& _myStream.DataAvailable
-                            //         )
-                            //{
-                            //    
-                            //    _sb.Append(_message);
-                            //}
+                                case "FindTipResponse":
+                                    var _listOfTranSite = _receiveRequest.Response as List<TranSiteVM>;
+                                    request.source.TIPS = _listOfTranSite;
+
+                                 
+                                    break;
+
+                                default:
+                                    break;
+                            }
 
                             request.messageX(_sb.ToString());
                         }
