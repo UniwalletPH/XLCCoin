@@ -23,9 +23,6 @@ namespace XLCCoin.Application.NodeCommands.Queries
 
 
         public List<TranSiteVM> TIPS { get; set; }
-
-        public int Age { get; set; }
-
     }
 }
 

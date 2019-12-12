@@ -28,8 +28,8 @@ namespace XLCCoin.Application.NodeCommands.Commands
             {
                 List<TranSiteVM> _tranSiteResponse = new List<TranSiteVM>
                 {
-
-                }; 
+                    new TranSiteVM{ TransactionDescription = "Buy Load"  }
+                };
 
                 return _tranSiteResponse;
             }

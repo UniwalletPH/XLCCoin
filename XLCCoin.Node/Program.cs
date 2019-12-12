@@ -93,25 +93,8 @@ namespace XLCCoin.Node
                     NodeVM _connectedNode = new NodeVM
                     {
                         Client = _client,
-                        Age = 9
                     };
 
-                    bool hasAllTips = true;
-
-                    foreach (var item in ConnectedNodes)
-                    {
-                        if (item.TIPS == null)
-                        {
-                            hasAllTips = false;
-                        }
-                    }
-
-                    if (hasAllTips)
-                    {
-                        // Randommize All TIps
-                    }
-
-                    
                     ConnectedNodes.Add(_connectedNode);
                     await Mediator.Send(new ListenMessageCommand(_connectedNode,(string msg) =>
                     {
@@ -125,7 +108,9 @@ namespace XLCCoin.Node
 
             Console.WriteLine("1 - List of all connected nodes");
             Console.WriteLine("2 - Send a message");
-            Console.WriteLine("3 - Exit");
+            Console.WriteLine("3 - Send FindTip command");
+            Console.WriteLine("4 - Check if  all responded");
+            Console.WriteLine("10 - Exit");
             
            start: 
             Console.Write("Please enter a command: ");
@@ -163,15 +148,46 @@ namespace XLCCoin.Node
 
                     Console.Write("Please send a message: ");
                     string _msgToSend = Console.ReadLine();
-                    //await Mediator.Send(new SendMessageCommand(_selectedNode, _msgToSend));
-
-                    await Mediator.Send(new SendFindTipCommand(_selectedNode));
-
+                    await Mediator.Send(new SendMessageCommand(_selectedNode, _msgToSend));
 
                     goto start;
+
+
+
+
 
                 case "3":
+                    foreach (var _node in ConnectedNodes)
+                    {
+                        await Mediator.Send(new SendFindTipCommand(_node));
+                    }
+
                     goto start;
+
+                case "4":
+                    bool _allResponded = true;
+                    foreach (var _node in ConnectedNodes)
+                    {
+                        if (_node.TIPS != null)
+                        {
+                            _allResponded = false;
+                        }
+                    }
+
+                    if (_allResponded)
+                    {
+                        Console.WriteLine("Yes! all responded");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Total response: {0}/{1}", 
+                            ConnectedNodes.Count(a => a.TIPS != null),
+                            ConnectedNodes.Count());
+                    }
+
+                    goto start;
+
+                case "10":
                 default:
                     Console.WriteLine("Invalid Command!");
                     goto start;

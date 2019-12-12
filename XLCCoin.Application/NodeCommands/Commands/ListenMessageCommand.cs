@@ -34,11 +34,6 @@ namespace XLCCoin.Application.NodeCommands.Commands
                 var client = request.source.Client;
                 var _myStream = client.GetStream();
 
-
-                var _tep = request.source.Age;
-
-                request.source.Age = 10;
-
                 new Thread(async ()=> {
                     while (client.Connected)
                     {
