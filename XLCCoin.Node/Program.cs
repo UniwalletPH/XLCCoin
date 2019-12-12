@@ -174,7 +174,7 @@ namespace XLCCoin.Node
                         }
                     }
 
-                    if (_allResponded)
+                    if (_allResponded && ConnectedNodes.Any())
                     {
                         Console.WriteLine("Yes! all responded");
                     }
