@@ -27,6 +27,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
             private readonly IMediator mediator;
             public ListenMessageCommandHandler(IMediator mediator, IXLCDbContext dbContext) : base(dbContext)
             {
+                this.mediator = mediator;
             }
 
             public async Task<Unit> Handle(ListenMessageCommand request, CancellationToken cancellationToken)

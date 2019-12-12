@@ -29,8 +29,8 @@ namespace XLCCoin.Node
         static async Task Main(string[] args)
         {
             
-            var _url = "http://192.168.2.12:5000/Node/Register";
-            var _url2 = "http://192.168.2.12:5000/Node/Neighbors";
+            var _url = "http://192.168.2.76:5000/Node/Register";
+            var _url2 = "http://192.168.2.76:5000/Node/Neighbors";
 
             List<NodeVM> ConnectedNodes = new List<NodeVM>();
 
@@ -123,6 +123,7 @@ namespace XLCCoin.Node
                     Console.WriteLine("Fetching neighbors...");
 
                     foreach (var item in ConnectedNodes)
+            
                     {
                         Console.WriteLine(item.ID + item.IPAddress + item.Port);
                     }
@@ -153,9 +154,6 @@ namespace XLCCoin.Node
                     goto start;
 
 
-
-
-
                 case "3":
                     foreach (var _node in ConnectedNodes)
                     {
@@ -168,13 +166,13 @@ namespace XLCCoin.Node
                     bool _allResponded = true;
                     foreach (var _node in ConnectedNodes)
                     {
-                        if (_node.TIPS != null)
-                        {
+                        if (_node.TIPS == null)
+                        { 
                             _allResponded = false;
                         }
                     }
 
-                    if (_allResponded)
+                    if (_allResponded && ConnectedNodes.Any())
                     {
                         Console.WriteLine("Yes! all responded");
                     }
