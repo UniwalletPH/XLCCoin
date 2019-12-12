@@ -8,7 +8,7 @@ namespace XLCCoin.Application.NodeCommands.Queries
     {
         public string CommandName { get; set; }
         public Dictionary<string,object> Parameters { get; set; }
-        public object Response { get; set; }
+        public string Response { get; set; }
 
     }
 }

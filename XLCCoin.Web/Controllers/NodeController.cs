@@ -21,9 +21,11 @@ namespace XLCCoin.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
-        { 
-            return Json(true);
+        public async Task<IActionResult> Index()
+        {
+            var _result = await mediator.Send(new GetNodesQuery());
+
+            return Json(_result);
         }
 
         [HttpPost]
@@ -55,6 +57,14 @@ namespace XLCCoin.Web.Controllers
 
 
             return Json(response);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Clear()
+        {
+            var _result = await mediator.Send(new ClearConnectedNodesCommand());
+
+            return Json(_result);
         }
     }
 }

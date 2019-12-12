@@ -63,7 +63,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
                                     var _findTipResponse = await mediator.Send(new FindTipCommand());
                                     _receiveRequest.CommandName = "FindTipResponse";
-                                    _receiveRequest.Response = _findTipResponse;
+                                    _receiveRequest.Response = JsonConvert.SerializeObject(_findTipResponse);
                                     var _responseRequest = JsonConvert.SerializeObject(_receiveRequest);
 
                                     await mediator.Send(new SendMessageCommand(request.source, _responseRequest));
@@ -72,12 +72,11 @@ namespace XLCCoin.Application.NodeCommands.Commands
 
 
                                 case "FindTipResponse":
-                                    var _listOfTranSite = _receiveRequest.Response as List<TranSiteVM>;
-                                    request.source.TIPS = _listOfTranSite;
-
+                                    string _rawData = _receiveRequest.Response;
+                                    List<TranSiteVM> _parsedData = JsonConvert.DeserializeObject<List<TranSiteVM>>(_rawData);
+                                    request.source.TIPS = _parsedData;
                                  
                                     break;
-
                                 default:
                                     break;
                             }
