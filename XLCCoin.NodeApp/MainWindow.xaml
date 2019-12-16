@@ -11,12 +11,10 @@
     </Window.DataContext>
     <Grid>
         <Button Content="Connect" HorizontalAlignment="Left" Margin="25,31,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-        
+
         <Grid HorizontalAlignment="Left" Margin="493,0,0,0" Width="307">
-            <ListBox ItemsSource="{Binding Log}" DisplayMemberPath="Data" />
-        </Grid>
-        <Grid HorizontalAlignment="Right">
-            <ListBox ItemsSource="{Binding ConnectedNodes}" DisplayMemberPath="Name" />
+            <ListBox ItemsSource="{Binding Log}" DisplayMemberPath="Data" Height="217" VerticalAlignment="Top" />
+            <ListBox ItemsSource="{Binding ConnectedNodes}" DisplayMemberPath="Name" Height="217" VerticalAlignment="Top" Margin="0,217,0,0" />
         </Grid>
     </Grid>
 </Window>
