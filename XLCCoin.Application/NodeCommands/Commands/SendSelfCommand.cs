@@ -54,7 +54,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
                 {
                     _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    var _response = await _client.PostAsync(request.serverUrl, _data);
+                    var _response = _client.PostAsync(request.serverUrl, _data).Result;
 
                     return "Success";
                 }

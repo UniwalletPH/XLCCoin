@@ -10,7 +10,7 @@
         <local:MainWindowVM></local:MainWindowVM>
     </Window.DataContext>
     <Grid>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="25,31,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <Button Content="Connect" HorizontalAlignment="Left" Margin="25,31,0,0" VerticalAlignment="Top" Click="Button_Click"/>
         
         <Grid HorizontalAlignment="Left" Margin="493,0,0,0" Width="307">
             <ListBox ItemsSource="{Binding Log}" DisplayMemberPath="Data" />

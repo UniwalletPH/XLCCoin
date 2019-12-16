@@ -19,12 +19,10 @@ namespace XLCCoin.Application.NodeCommands.Commands
     {
        
         private readonly string neighborsUrl;
-        private readonly IPEndPoint myEndpoint;
 
-        public GetNeighborsCommand(IPEndPoint myEndpoint, string url) {
+        public GetNeighborsCommand(string url) {
 
             this.neighborsUrl = url;
-            this.myEndpoint = myEndpoint;
         }
 
         public class GetNeighborsCommandHandler : BaseRequestHandler, IRequestHandler<GetNeighborsCommand, List<NodeVM>>
@@ -52,11 +50,7 @@ namespace XLCCoin.Application.NodeCommands.Commands
                             return new List<NodeVM>();
                         }
 
-                        return _listOfNodes.Where(a => a.IPAddress != request.myEndpoint.ToString()
-                                                        && a.Port != request.myEndpoint.Port)
-                            .ToList();
-
-
+                        return _listOfNodes;
                     }
 
                 }

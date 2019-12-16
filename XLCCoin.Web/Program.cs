@@ -16,17 +16,17 @@ namespace XLCCoin.Web
             CreateHostBuilder(args).Build().Run();
         }
 
-        //public static IHostBuilder CreateHostBuilder(string[] args) =>
-        //    Host.CreateDefaultBuilder(args)
-        //        .ConfigureWebHostDefaults(webBuilder =>
-        //        {
-        //            webBuilder.UseStartup<Startup>();
-        //        });
-  
-        public static IWebHostBuilder CreateHostBuilder(string[] args) =>
-             WebHost.CreateDefaultBuilder(args)
-                 .UseUrls("http://0.0.0.0:5000")
-                 .UseKestrel()
-                 .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+
+        //public static IWebHostBuilder CreateHostBuilder(string[] args) =>
+        //     WebHost.CreateDefaultBuilder(args)
+        //         .UseUrls("http://0.0.0.0:5000")
+        //         .UseKestrel()
+        //         .UseStartup<Startup>();
     }
 }

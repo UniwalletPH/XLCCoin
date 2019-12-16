@@ -66,7 +66,7 @@ namespace XLCCoin.Node
 
             #region Step 4 //GetNeighbors Command
             // Get Neighbor Command 
-            var _getNeighbors = new GetNeighborsCommand(_myEndpoint, _url2);
+            var _getNeighbors = new GetNeighborsCommand(_url2);
 
             List<NodeVM> _neighbors = await Mediator.Send(_getNeighbors);
             Console.WriteLine("Fetching neighbors...");

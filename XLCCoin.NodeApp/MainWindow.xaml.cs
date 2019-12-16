@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +27,8 @@ namespace XLCCoin.NodeApp
     public partial class MainWindow : Window
     {
         private readonly IMediator mediator;
+        string _baseUrl = "http://leracoin.azurewebsites.net";
+
 
         public MainWindow(IMediator mediator)
         {
@@ -54,11 +58,51 @@ namespace XLCCoin.NodeApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as MainWindowVM).AddLog("haha");
+            // Get Neighbor Command 
+            var _getNeighbors = new GetNeighborsCommand($"{_baseUrl}/Node/Neighbors");
+
+            List<NodeVM> _neighbors = mediator.Send(_getNeighbors).Result;
+            AddLog("Fetching neighbors...");
+
+            List<TranSiteVM> _transites = new List<TranSiteVM>();
+
+            foreach (var _node in _neighbors)
+            {
+                AddLog("Connecting node..");
+
+                IPEndPoint _nodeEndpoint = new IPEndPoint(IPAddress.Parse(_node.IPAddress), _node.Port);
+
+                TryConnectNodeCommand _connectCmd = new TryConnectNodeCommand(_nodeEndpoint);
+
+                TcpClient _client = mediator.Send(_connectCmd).Result;
+
+                if (_client.Connected)
+                {
+                    NodeVM _connectedNode = new NodeVM
+                    {
+                        Client = _client,
+                    };
+
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        (this.DataContext as MainWindowVM).AddConnectedNode(_connectedNode);
+                    });
+
+                    var _r = mediator.Send(new ListenMessageCommand(_connectedNode, (string msg) =>
+                    {
+                        AddLog($"Message: {msg}");
+                    })).Result;
+
+                    AddLog("Connected!");
+                }
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+            AddLog($"MID server: {_baseUrl}");
+
             var _myEndpoint = mediator.Send(new GenerateSelfNodeEndpointCommand())
                 .GetAwaiter()
                 .GetResult();
@@ -86,6 +130,15 @@ namespace XLCCoin.NodeApp
                 .GetResult();
 
             AddLog("Listening for connection..");
+
+
+            var _sendSelf = new SendSelfCommand(_myEndpoint, $"{_baseUrl}/Node/Register");
+
+            mediator.Send(_sendSelf)
+                .GetAwaiter()
+                .GetResult();
+
+            AddLog("Sending self to MID: {0}", $"/Node/Register");
         }
     }
 }
