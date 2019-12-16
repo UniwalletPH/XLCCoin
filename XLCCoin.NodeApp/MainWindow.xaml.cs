@@ -58,44 +58,51 @@ namespace XLCCoin.NodeApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // Get Neighbor Command 
-            var _getNeighbors = new GetNeighborsCommand($"{_baseUrl}/Node/Neighbors");
-
-            List<NodeVM> _neighbors = mediator.Send(_getNeighbors).Result;
-            AddLog("Fetching neighbors...");
-
-            List<TranSiteVM> _transites = new List<TranSiteVM>();
-
-            foreach (var _node in _neighbors)
+            new Thread(() =>
             {
-                AddLog("Connecting node..");
+                // Get Neighbor Command 
+                AddLog("Fetching neighbors...");
 
-                IPEndPoint _nodeEndpoint = new IPEndPoint(IPAddress.Parse(_node.IPAddress), _node.Port);
+                var _getNeighbors = new GetNeighborsCommand($"{_baseUrl}/Node/Neighbors");
 
-                TryConnectNodeCommand _connectCmd = new TryConnectNodeCommand(_nodeEndpoint);
+                List<NodeVM> _neighbors = mediator.Send(_getNeighbors).Result;
 
-                TcpClient _client = mediator.Send(_connectCmd).Result;
+                AddLog("{0} neighbor/s found", _neighbors.Count());
 
-                if (_client.Connected)
+
+                List<TranSiteVM> _transites = new List<TranSiteVM>();
+
+                foreach (var _node in _neighbors)
                 {
-                    NodeVM _connectedNode = new NodeVM
-                    {
-                        Client = _client,
-                    };
+                    AddLog("Connecting node..");
 
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        (this.DataContext as MainWindowVM).AddConnectedNode(_connectedNode);
-                    });
+                    IPEndPoint _nodeEndpoint = new IPEndPoint(IPAddress.Parse(_node.IPAddress), _node.Port);
 
-                    var _r = mediator.Send(new ListenMessageCommand(_connectedNode, (string msg) =>
-                    {
-                        AddLog($"Message: {msg}");
-                    })).Result;
+                    TryConnectNodeCommand _connectCmd = new TryConnectNodeCommand(_nodeEndpoint);
 
-                    AddLog("Connected!");
+                    TcpClient _client = mediator.Send(_connectCmd).Result;
+
+                    if (_client.Connected)
+                    {
+                        NodeVM _connectedNode = new NodeVM
+                        {
+                            Client = _client,
+                        };
+
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            (this.DataContext as MainWindowVM).AddConnectedNode(_connectedNode);
+                        });
+
+                        var _r = mediator.Send(new ListenMessageCommand(_connectedNode, (string msg) =>
+                        {
+                            AddLog($"Message: {msg}");
+                        })).Result;
+
+                        AddLog("Connected!");
+                    }
                 }
-            }
+            }).Start();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -132,13 +139,18 @@ namespace XLCCoin.NodeApp
             AddLog("Listening for connection..");
 
 
-            var _sendSelf = new SendSelfCommand(_myEndpoint, $"{_baseUrl}/Node/Register");
+            new Thread(() =>
+            {
+                AddLog("Sending self to MID: {0}", $"/Node/Register");
 
-            mediator.Send(_sendSelf)
-                .GetAwaiter()
-                .GetResult();
+                var _sendSelf = new SendSelfCommand(_myEndpoint, $"{_baseUrl}/Node/Register");
 
-            AddLog("Sending self to MID: {0}", $"/Node/Register");
+                mediator.Send(_sendSelf)
+                    .GetAwaiter()
+                    .GetResult();
+
+                AddLog("Send self done!");
+            }).Start();
         }
     }
 }
