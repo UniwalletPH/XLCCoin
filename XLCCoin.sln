@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XLCCoin.Node", "XLCCoin.Nod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XLCCoin.Web", "XLCCoin.Web\XLCCoin.Web.csproj", "{FBD1126B-988C-4491-A1F9-57410489E28A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLCCoin.Infrastructure", "XLCCoin.Infrastructure\XLCCoin.Infrastructure.csproj", "{0FC01824-1D68-4952-9C1E-871AF9F1E3E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XLCCoin.Infrastructure", "XLCCoin.Infrastructure\XLCCoin.Infrastructure.csproj", "{0FC01824-1D68-4952-9C1E-871AF9F1E3E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XLCCoin.NodeApp", "XLCCoin.NodeApp\XLCCoin.NodeApp.csproj", "{BFC516E0-0806-415D-A10E-7461979B3096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{0FC01824-1D68-4952-9C1E-871AF9F1E3E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FC01824-1D68-4952-9C1E-871AF9F1E3E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FC01824-1D68-4952-9C1E-871AF9F1E3E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFC516E0-0806-415D-A10E-7461979B3096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFC516E0-0806-415D-A10E-7461979B3096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFC516E0-0806-415D-A10E-7461979B3096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFC516E0-0806-415D-A10E-7461979B3096}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{B9BFE441-AC4B-4F10-9096-74A3B57E3439} = {7F34E81F-46B8-4ED3-B0FC-140641B453D9}
 		{FBD1126B-988C-4491-A1F9-57410489E28A} = {7F34E81F-46B8-4ED3-B0FC-140641B453D9}
 		{0FC01824-1D68-4952-9C1E-871AF9F1E3E3} = {D089C720-2340-40A0-B47C-27D2FA612EE8}
+		{BFC516E0-0806-415D-A10E-7461979B3096} = {7F34E81F-46B8-4ED3-B0FC-140641B453D9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D8E8E1BC-18C0-41F5-A8FB-72DF5C2B9793}

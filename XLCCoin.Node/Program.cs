@@ -41,16 +41,11 @@ namespace XLCCoin.Node
             #endregion
 
             #region Step 2 //ListenForConnection Command
-            Action<TcpClient> _whenConnected = async (TcpClient theTcpClientConnected) =>
+            Action<NodeVM> _whenConnected = async (NodeVM connectedNode) =>
                 {
-                    NodeVM _connectedNode = new NodeVM
-                    {
-                        Client = theTcpClientConnected
-                    };
+                    ConnectedNodes.Add(connectedNode);
 
-                    ConnectedNodes.Add(_connectedNode);
-
-                   await Mediator.Send(new ListenMessageCommand(_connectedNode, (string msg) =>
+                   await Mediator.Send(new ListenMessageCommand(connectedNode, (string msg) =>
                     {
                         Console.WriteLine("The message is: " + msg);
                     }));

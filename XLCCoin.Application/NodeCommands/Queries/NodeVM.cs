@@ -17,6 +17,20 @@ namespace XLCCoin.Application.NodeCommands.Queries
         public bool IsBehindNAT { get; set; }
         public string Geolocation { get; set; }
 
+        private string name;
+        public string Name
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    return name.Trim();
+                }
+
+                return $"{IPAddress}:{Port}";
+            }
+        }
+
         public bool IsConnected { get; set; }
 
         public TcpClient Client { get; set; }

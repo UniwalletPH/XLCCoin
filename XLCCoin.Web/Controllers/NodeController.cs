@@ -25,7 +25,24 @@ namespace XLCCoin.Web.Controllers
         {
             var _result = await mediator.Send(new GetNodesQuery());
 
-            return Json(_result);
+            return Json(new
+            {
+                Commands = new
+                {
+                    Register = new
+                    {
+                        Url = "/Node/Register",
+                        Type = "POST",
+                        Body = "NodeVM"
+                    },
+                    Clear = new
+                    {
+                        Url = "/Node/Clear",
+                        Type = "GET"
+                    }
+                },
+                Data = _result
+            });
         }
 
         [HttpPost]
